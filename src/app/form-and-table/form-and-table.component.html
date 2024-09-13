@@ -1,0 +1,165 @@
+<div
+    class="min-h-screen bg-gradient-to-br from-blue-300 via-blue-50 to-blue-300 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <div class="max-w-4xl w-full space-y-8 bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div class="px-4 py-5 sm:p-6 space-y-4">
+            <h2 class="text-3xl font-extrabold text-gray-900 text-center">
+                INGRESO DE EVENTOS
+            </h2>
+            <p class="text-center text-gray-500 text-sm">
+                Ingresa los datos del evento para agregar manualmente un evento.
+            </p>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-8 space-y-6 relative">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="datetime" class="sr-only">Fecha y hora</label>
+                        <input id="datetime" formControlName="datetime" type="datetime-local" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Selecciona fecha y hora">
+                    </div>
+
+                    <div>
+                        <label for="description" class="sr-only">Descripción</label>
+                        <textarea id="description" formControlName="description" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Descripción"></textarea>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" [disabled]="form.invalid"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Agregar Evento
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Filtros -->
+        <div class="px-4 py-5 sm:p-6 space-y-4">
+            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4 text-center">Filtros</h3>
+            <form [formGroup]="filterForm" class="flex flex-wrap gap-4">
+                <div class="flex-1 min-w-0">
+                    <label for="typeFilter" class="sr-only">Tipo</label>
+                    <select id="typeFilter" formControlName="type"
+                        class="appearance-none block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="">Todos los tipos</option>
+                        <option value="FORMULARIO">FORMULARIO</option>
+                        <option value="API">API</option>
+                    </select>
+                </div>
+
+                <div class="flex-1 min-w-0">
+                    <label for="dateFilter" class="sr-only">Fecha</label>
+                    <input id="dateFilter" formControlName="date" type="date"
+                        class="appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        placeholder="Buscar por fecha">
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabla de eventos -->
+        <div class="bg-gray-50 px-4 py-5 sm:p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div class="w-10"></div> <!-- Spacer to balance the layout -->
+                <h3 class="text-lg font-medium leading-6 text-gray-900 flex-grow text-center">EVENTOS REGISTRADOS</h3>
+                <button type="button" (click)="loadData()"
+                    class="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-bl-200">
+                    <thead class="bg-blue-100">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Tipo
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Fecha
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Descripción
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr *ngFor="let data of pagedDataList; let i = index"
+                            class="hover:bg-blue-50 transition-colors duration-150 ease-in-out" [@fadeInOut]>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ data.event_type
+                                }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ data.event_date }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ data.description }}</td>
+                        </tr>
+                        <tr *ngIf="pagedDataList.length === 0">
+                            <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No hay
+                                eventos registrados</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <button (click)="previousPage()" [disabled]="currentPage === 1"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Anterior
+                    </button>
+                    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                        class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Siguiente
+                    </button>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Mostrando
+                            <span class="font-medium">{{ (currentPage - 1) * pageSize + 1 }}</span>
+                            a
+                            <span class="font-medium">{{ math.min(currentPage * pageSize, totalItems) }}</span>
+                            de
+                            <span class="font-medium">{{ totalItems }}</span>
+                            resultados
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            <button (click)="previousPage()" [disabled]="currentPage === 1"
+                                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Anterior</span>
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd"
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <!-- Page numbers -->
+                            <button *ngFor="let page of pageNumbers()" (click)="goToPage(page)"
+                                [class.bg-indigo-50]="page === currentPage"
+                                [class.border-indigo-500]="page === currentPage"
+                                [class.text-indigo-600]="page === currentPage"
+                                class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                {{ page }}
+                            </button>
+                            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Siguiente</span>
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>

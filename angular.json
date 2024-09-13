@@ -27,7 +27,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "baseHref": "/",
+            "deployUrl": "/"
           },
           "configurations": {
             "production": {
@@ -43,7 +45,9 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "baseHref": "/",
+              "deployUrl": "/"
             },
             "development": {
               "optimization": false,
@@ -79,8 +83,7 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-            ],
+            "assets": [],
             "styles": [
               "src/styles.css"
             ],
